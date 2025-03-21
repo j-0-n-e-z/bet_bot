@@ -9,10 +9,13 @@ from telegram.ext import (ApplicationBuilder, CommandHandler, ContextTypes,
 load_dotenv()
 
 def generateBets(freebet_coef, money_coef, freebet, money_start = 100, money_step = 10, inaccuracy = 0.02):
-    lowest_win = freebet / 2
-
+    if freebet_coef < 3:
+       return 'у фрибета кэф должен быть больше 3'
+  
     if freebet < 80:
       return 'таких фрибетов не бывает'
+    
+    lowest_win = freebet / 2
 
     bets = []
     for i in range(1000):
