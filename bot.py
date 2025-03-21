@@ -47,7 +47,7 @@ def generateBets(freebet_coef, money_coef, freebet, money_start = 100, money_ste
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-       await update.message.reply_text(f'Hello, {update.effective_user.first_name}')
+    await update.message.reply_html(update.message.text_html)
 
 
 async def calc(update: Update, context: ContextTypes.DEFAULT_TYPE):
