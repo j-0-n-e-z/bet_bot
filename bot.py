@@ -1,14 +1,18 @@
-from uuid import uuid4
 import os
+from uuid import uuid4
+
+from dotenv import load_dotenv
 from telegram import InlineQueryResultArticle, InputTextMessageContent, Update
 from telegram.ext import (ApplicationBuilder, CommandHandler, ContextTypes,
                           InlineQueryHandler, MessageHandler, filters)
-from dotenv import load_dotenv
 
 load_dotenv()
 
 def generateBets(freebet_coef, money_coef, freebet, money_start = 100, money_step = 10, inaccuracy = 0.02):
     lowest_win = freebet / 2
+
+    if freebet < 80:
+      return 'таких фрибетов не бывает'
 
     bets = []
     for i in range(1000):
@@ -54,9 +58,19 @@ async def calc(update: Update, context: ContextTypes.DEFAULT_TYPE):
       await context.bot.send_message(chat_id=update.effective_chat.id, text='должно быть три параметра: [фрибет_кэф] [руб_кэф] [фрибет]')
       return
 
-    bets = generateBets(*list(map(float, args)))
+    bets = []
+    try:
+      bets = generateBets(*list(map(float, args)))
+    except:
+      await context.bot.send_message(chat_id=update.effective_chat.id, text='Не удалось конвертировать параметры')
+      return
+    
+    if isinstance(bets, str):
+      await context.bot.send_message(chat_id=update.effective_chat.id, text=bets)
+      return
 
     message = "Список ставок:\n\n"
+    print(bets)
     for item in bets:
         message += (
             f"💰 Ставка: {item['bet']}р\n"
@@ -67,7 +81,11 @@ async def calc(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def main() -> None:
-    application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    if  TELEGRAM_BOT_TOKEN is None:
+        raise ValueError("TELEGRAM_BOT_TOKEN не найден в переменных окружения")
+    
+    application = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
 
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
     
