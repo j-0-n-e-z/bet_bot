@@ -8,7 +8,7 @@ from telegram.ext import (ApplicationBuilder, CommandHandler, ContextTypes,
 
 load_dotenv()
 
-def generateBets(freebet_coef, money_coef, freebet, money_start = 100, money_step = 10, inaccuracy = 0.02):
+def generateBets(freebet_coef, money_coef, freebet, money_start = 100, money_step = 10, inaccuracy = 0.1):
     if freebet_coef < 3:
        return 'у фрибета кэф должен быть больше 3'
   
