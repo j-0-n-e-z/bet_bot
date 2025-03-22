@@ -77,8 +77,8 @@ async def calc(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for item in bets:
         message += (
             f"💰 Ставка: {item['bet']}р\n"
-            f"🎯 Выигрыш {args[0]} = {item['money_win']}р\n"
-            f"🎁 Выигрыш {args[1]} = {item['freebet_win']}р\n\n"
+            f"🎯 Выигрыш {args[1]} = {item['money_win']}р\n"
+            f"🎁 Выигрыш {args[0]} = {item['freebet_win']}р\n\n"
         )
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
